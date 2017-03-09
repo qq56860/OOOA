@@ -1,0 +1,123 @@
+@CHARSET "UTF-8";
+.title {
+  text-align: center;
+}
+.chat-content-container {
+  height: 200px;
+  overflow-y: scroll;
+  border: 1px solid silver;
+  width: 100%;
+  background-color: white;
+}
+#move{
+	width:100%;height:50px;background-color: #F0F8FF;text-align: center;
+	transition:0.5s all;
+	-webkit-transition:0.5s all;
+	-moz-transition:0.5s all;
+	-o-transition:0.5s all;
+	-ms-transition:0.5s all;
+	
+}
+#chatUI{
+	z-index:1000;
+	position:fixed;
+	background-color: #F0F0EE;
+	border:1px solid #d6d6d6;
+	width:600;
+	height:500px;
+	top:38%;
+	left:25%;
+	margin:-150px 0 0 -100px;
+	display:none;
+}
+#right_side{
+	width:220;
+	height:555px;
+	z-index: 999;
+	position: fixed;
+	right:0px;
+	top:53px;
+}
+#see{
+	border: 1px solid #87CEEB;padding: 6px 0;
+	 -webkit-border-radius:8px;
+	 -moz-border-radius: 8px;
+	 border-radius: 8px;
+	 -webkit-box-shadow: #AFEEEE 0px 0px 10px;
+	 -moz-box-shadow: #AFEEEE 0px 0px 10px;
+	box-shadow: #AFEEEE 0px 0px 10px;
+	width:20px;
+	height:100%;
+	float:right;
+	background-color:#E0FFFF;
+}
+#list{
+	width:200px;
+	overflow-y:auto;
+	overflow-x: hidden;
+	height:100%;
+	background-color:#1E90FF;
+}
+#chatTop{
+	height:26px;
+	width:100%;
+	cursor: move;
+	background:repeat scroll 0 0 #F0F0EE;
+}
+.notice{
+	z-index:900;
+	position:fixed;
+	background-image:url(/OA/images/noticebg.jpg);
+	border:5px solid #d6d6d6;
+	
+	-webkit-border-radius:8px;
+	 -moz-border-radius: 8px;
+	 border-radius: 8px;
+	 -webkit-box-shadow: #000000 0px 0px 10px;
+	 -moz-box-shadow: #000000 0px 0px 10px;
+	box-shadow: #000000 0px 0px 10px;
+	
+	width:600;
+	height:550px;
+	top:28%;
+	left:28%;
+	margin:-150px 0 0 -100px;
+	display: none;
+	overflow-y:auto;
+	overflow-x: hidden;
+}
+.personal{
+	z-index:900;
+	position:fixed;
+	background-image:url(/OA/images/noticebg.jpg);
+	border:5px solid #d6d6d6;
+	
+	
+	
+	width:350;
+	height:400px;
+	top:40%;
+	left:38%;
+	margin:-150px 0 0 -100px;
+	display: none;
+}
+.addPersonal{
+	z-index:900;
+	position:fixed;
+	background-image:url(/OA/images/noticebg.jpg);
+	border:3px solid #d6d6d6;
+	
+	-webkit-border-radius:8px;
+	 -moz-border-radius: 8px;
+	 border-radius: 8px;
+	 -webkit-box-shadow: #000000 0px 0px 10px;
+	 -moz-box-shadow: #000000 0px 0px 10px;
+	box-shadow: #000000 0px 0px 10px;
+	
+	width:350;
+	height:400px;
+	top:40%;
+	left:38%;
+	margin:-150px 0 0 -100px;
+	display: none;
+}

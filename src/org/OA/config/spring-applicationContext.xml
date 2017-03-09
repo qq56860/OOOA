@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.2.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd">
+		
+	<!-- 配置数据源 -->
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource" >  
+       <property name="driverClassName" value="com.mysql.jdbc.Driver"></property>  
+       <property name="url" value="jdbc:mysql://localhost:3306/oa"></property>  
+       <property name="username" value="root"></property>  
+       <property name="password" value="123456"></property>  
+	</bean>
+    <!-- 配置sessionfactory -->
+	<bean id="sessionf" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSource"></property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>  
+                <prop key="hibernate.hbm2ddl.auto">update</prop>  
+                <prop key="hibernate.show_sql">true</prop>  
+                <prop key="hibernate.format_sql">true</prop> 
+			</props>
+		</property>
+		<property name="annotatedClasses">
+			<list>
+				<!-- 配置实体类 -->
+				<value>org.lanqiao.entity.Admin</value>
+				<value>org.lanqiao.entity.Common</value>
+				<value>org.lanqiao.entity.Contacts</value>
+				<value>org.lanqiao.entity.Email</value>
+				<value>org.lanqiao.entity.Employee</value>
+				<value>org.lanqiao.entity.Information</value>
+				<value>org.lanqiao.entity.Manager</value>
+				<value>org.lanqiao.entity.Notice</value>
+				<value>org.lanqiao.entity.Page</value>
+				<value>org.lanqiao.entity.Personal</value>
+				<value>org.lanqiao.entity.Query_info</value>
+				<value>org.lanqiao.entity.Schedule</value>
+				<value>org.lanqiao.entity.Screen</value>
+			</list>
+		</property>
+	</bean>
+	<!-- 配置事务管理器 -->
+	<bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">  
+        <property name="sessionFactory" ref="sessionf"/>  
+    </bean>  
+	<!-- 配置代理 -->
+	<bean id="transactionProxy" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean" abstract="true">
+		<property name="transactionManager" ref="transactionManager"></property>
+		<property name="transactionAttributes">
+			<props>
+			 	<prop key="add*">PROPAGATION_REQUIRED,-Exception</prop>   
+                <prop key="modify*">PROPAGATION_REQUIRED,-myException</prop>  
+                <prop key="update*">PROPAGATION_REQUIRED</prop>
+                <prop key="del*">PROPAGATION_REQUIRED</prop>    
+                <prop key="*">PROPAGATION_REQUIRED</prop> 
+			</props>
+		</property>
+	</bean>	
+
+
+<!-- 配置dao，biz，控制器代理 -->
+
+
+
+	
+<!-- 配置PersonalDao -->	
+ 	<bean id="PersonalDao" class="org.lanqiao.dao.impl.PersonalDaoImpl">
+		<property name="sessionFactory" ref="sessionf"></property>
+	</bean>
+<!-- 配置CommonDao -->	
+	<bean id="CommonDao" class="org.lanqiao.dao.impl.CommonDaoImpl">
+		<property name="sessionFactory" ref="sessionf"></property>
+	</bean>
+	
+<!-- 配置PersonalBiz -->
+ 	<bean id="PersonalBiz" class="org.lanqiao.biz.impl.PersonalBizImpl">
+       <property name="persondao" ref="PersonalDao"></property>
+    </bean>
+<!-- 配置CommonBiz -->  
+    <bean id="CommonBiz" class="org.lanqiao.biz.impl.CommonBizImpl">
+       <property name="commondao" ref="CommonDao"></property>
+    </bean>	
+<!-- 配置Bean里的应用事物 -->
+ <bean name="PersonalBizImpl" parent="transactionProxy">
+<property name="target" ref="PersonalBiz"></property>
+</bean>
+<!-- 配置Bean里的应用事物 -->
+<bean name="CommomBizImpl" parent="transactionProxy">
+<property name="target" ref="CommonBiz"></property>
+</bean>
+
+	<!-- 代理 -->
+	
+	<!-- 配置admin -->
+	<bean id="AdminDao" class="org.lanqiao.dao.impl.AdminDaoImpl">
+		<property name="sessionFactory" ref="sessionf"></property>
+	</bean>
+	<bean id="AdminBizbase" class="org.lanqiao.biz.impl.AdminBizImpl">
+		<property name="admindao" ref="AdminDao"></property>
+	</bean>
+	<bean name="adminBiz" parent="transactionProxy">  
+        <property name="target" ref="AdminBizbase"></property>  
+    </bean>
+			 
+	<!-- 配置employee --> 
+	<bean id="EmployeeDao" class="org.lanqiao.dao.impl.EmployeeDaoImpl">
+		<property name="sessionFactory" ref="sessionf"></property>
+	</bean>
+	<!-- 配置biz -->
+	<bean id="EmployeeBizbase" class="org.lanqiao.biz.impl.EmployeeBizImpl">
+		<property name="employeedao" ref="EmployeeDao"></property>
+	</bean>
+	<!-- 代理 -->
+	<bean name="employeeBiz" parent="transactionProxy">  
+        <property name="target" ref="EmployeeBizbase"></property>  
+    </bean>
+    
+    <!-- 配置Manager -->
+    <bean id="ManagerDao" class="org.lanqiao.dao.impl.ManagerDaoImpl">
+		<property name="sessionFactory" ref="sessionf"></property>
+	</bean>
+	<!-- 配置biz -->
+	<bean id="ManagerBizbase" class="org.lanqiao.biz.impl.ManagerBizImpl">
+		<property name="managerdao" ref="ManagerDao"></property>
+	</bean>
+	<!-- 代理 -->
+	<bean name="managerBiz" parent="transactionProxy">  
+        <property name="target" ref="ManagerBizbase"></property>  
+    </bean>
+    
+    
+    <!-- 配置notice公告 -->
+	<bean id="NoticeDao" class="org.lanqiao.dao.impl.NoticeDaoImpl">
+		<property name="sessionFactory" ref="sessionf"></property>
+	</bean>
+	<!-- 配置biz -->
+	<bean id="NoticeBizbase" class="org.lanqiao.biz.impl.NoticeBizImpl">
+		<property name="noticedao" ref="NoticeDao"></property>
+	</bean>
+	<!-- 代理 -->
+	<bean name="noticeBiz" parent="transactionProxy">  
+        <property name="target" ref="NoticeBizbase"></property>  
+    </bean>
+
+	<!--个人日程Dao，biz  -->
+	<bean id="ScheduleDao" class="org.lanqiao.dao.impl.ScheduleDaoImpl">
+		<property name="sessionFactory" ref="sessionf"></property>
+	</bean>
+	<!-- 配置biz -->
+	<bean id="ScheduleBizbase" class="org.lanqiao.biz.impl.ScheduleBizImpl">
+		<property name="scheduledao" ref="ScheduleDao"></property>
+	</bean>
+	<!-- 代理 -->
+	<bean name="scheduleBiz" parent="transactionProxy">  
+        <property name="target" ref="ScheduleBizbase"></property>  
+    </bean>
+
+	<bean id="EmailDao" class="org.lanqiao.dao.impl.EmailDaoImpl">
+		<property name="sessionFactory" ref="sessionf"></property>
+	</bean>
+	<!-- 配置biz -->
+	<bean id="emailBizbase" class="org.lanqiao.biz.impl.EmailBizImpl">
+		<property name="emaildaoimpl" ref="EmailDao"></property>
+	</bean>
+	<!-- 代理 -->
+	<bean name="emailBiz" parent="transactionProxy">  
+        <property name="target" ref="emailBizbase"></property>  
+    </bean>
+	
+
+</beans>
